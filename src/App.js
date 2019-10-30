@@ -31,8 +31,6 @@ export default class App extends Component {
 
   async apiCall(channel, page) {
     let res = await axios.get(`https://api.are.na/v2/channels/${this.state.slug}?per=100&page=${page}`);
-    // console.log(res);
-    
     let data = await res.data;
     return data;
   }
@@ -56,8 +54,6 @@ export default class App extends Component {
                   this.setState({ 
                     collectedBlocks: [...this.state.collectedBlocks, ...data.contents]
                   }, () => {
-                    console.log(this.state);
-                    
                     this.setState({ redirect: true })
                   });
                 });

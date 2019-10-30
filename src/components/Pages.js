@@ -35,7 +35,10 @@ const styles = StyleSheet.create({
 export default class Pages extends Component {
   render() {
     return (
-      <Document>
+      <Document
+        title={this.props.metadata.title}
+        author={this.props.metadata.collaborators == null ? `${this.props.metadata.user.full_name}` : `${this.props.metadata.user.full_name}, ${this.props.metadata.collaborators}` }
+      >
         <Page size="A4" style={styles.titlePage}>
           <View style={styles.titleView}>
             <Text style={styles.titleGroup}>Are.na</Text>

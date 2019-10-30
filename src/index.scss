@@ -96,6 +96,7 @@ button {
 .channel-url-form {
   display: flex;
   height: 100%;
+  border: 1px solid #000;
 
   flex-direction:row;
   
@@ -119,6 +120,7 @@ button {
   // padding: 0 1rem;
   background-color: #fff;
   outline: none;
+  padding: 10px;
 
    /* Tell the input to use all the available space */
   flex-grow:2;
@@ -142,6 +144,12 @@ button {
   font-weight: bold;
   border-radius: 0 10px 10px 0;
   height: 100%;
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+.wonky {
+  rotate: 90deg;
 }
 
 .dyptich {
@@ -178,6 +186,23 @@ section.info {
   
   p:not(:last-child) {
     padding-bottom: 20px;
+  }
+
+  li {
+    font-size: 16px;
+  }
+
+  svg {
+    height: 92px;
+    filter: drop-shadow(0 2px 4px rgba(255, 105, 219, 0.4));
+    margin-left: -10px;
+    margin-top: -10px;
+    margin-bottom: -20px;
+    
+    text {
+      fill: rgba(255, 105, 219, 0.8);
+      font-size: 0.09em;
+    }
   }
 }
 
