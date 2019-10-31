@@ -13,6 +13,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       redirect: false,
+      loading: true
     }
 
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -21,23 +22,24 @@ export default class App extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    if (this.state.redirect === true) {
-      this.setState({ redirect: false })
-    }
+    this.setState({ loading: !this.state.loading }, () => {
+      if (this.state.redirect === true) {
+        this.setState({ redirect: false })
+      }
 
-    this.setState({ slug: this.chanInput.value })
-
-    console.log(this.state.slug);
-    
-
-    getArenaChannel(this.chanInput.value, 1).then(data => {
-      this.setState({ ...data }, () => {
-        this.setState({ redirect: true }, () => {
-          console.log('redirected');
+      this.setState({ slug: this.chanInput.value }, () => {
+        getArenaChannel(this.chanInput.value, 1).then(data => {
+          this.setState({ ...data }, () => {
+            this.setState({ loading: false }, () => {
+              this.setState({ redirect: true }, () => {
+                console.log(`loaded and redirected to ${this.state.slug}`);
+              })
+            })
+          })
+        }, reason => {
+          // console.log(reason);
         })
       })
-    }, reason => {
-      // console.log(reason);
     })
   }
 
@@ -45,7 +47,7 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <React.Fragment>
-          <div class="control-center">
+          <div className="control-center">
             <div className="site-title">
               <Link to="/">arena2pdf</Link>
             </div>
@@ -58,7 +60,7 @@ export default class App extends Component {
             </section>
           </div>
 
-          {this.state.redirect ? <Redirect to={`/${this.state.slug}`} push /> : ''}
+          {this.state.redirect ? <Redirect to={`/${this.state.slug}`} push /> : null}
 
           <Switch>
             <Route
@@ -68,11 +70,19 @@ export default class App extends Component {
             />
             <Route
             path={["/:channel"]}
-            render={(props) =>
-              <Viewer {...props}
-                metadata={this.state.originalChannelData}
-                blocks={this.state.collectedBlocks}
-              />
+            render={(props) => {
+                if (this.state.loading) {
+                  return (<div>Loading</div>)
+                } else {
+                  return (
+                    <Viewer {...props}
+                      metadata={this.state.originalChannelData}
+                      blocks={this.state.collectedBlocks}
+                      loading={this.state.loading}
+                    />
+                  )
+                }
+              }
             }
           />
           </Switch>

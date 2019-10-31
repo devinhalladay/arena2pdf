@@ -53,7 +53,7 @@ export default class Pages extends Component {
         </Page>
         {this.props.blocks.map((block) => {
           return (
-            <Page size="A4" style={styles.page} id={block.id}>
+            <Page size="A4" style={styles.page} key={block.id}>
               <View style={styles.section}>
                 <Text>{block.title}</Text>
               </View>
