@@ -1,66 +1,44 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
 import { Switch } from 'react-router';
-import axios from 'axios';
+import { getArenaChannel } from './helpers/api';
+
 import './App.css';
 
 import Home from "./components/Home";
 import Viewer from "./components/Viewer";
-
-const apiInit = {
-  method: 'GET',
-  mode: 'cors',
-  cache: 'no-cache'
-};
-
-let currentPage;
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       redirect: false,
-      slug: '',
-      originalChannelData: [],
-      collectedBlocks: [],
     }
 
-    this.apiCall = this.apiCall.bind(this);
-    this.getArenaChannel = this.getArenaChannel.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  async apiCall(channel, page) {
-    let res = await axios.get(`https://api.are.na/v2/channels/${this.state.slug}?per=100&page=${page}`);
-    let data = await res.data;
-    return data;
-  }
-
-  getArenaChannel(url, page, e) {
+  handleSubmit(e) {
     e.preventDefault();
+
+    if (this.state.redirect === true) {
+      this.setState({ redirect: false })
+    }
+
+    this.setState({ slug: this.chanInput.value })
+
+    console.log(this.state.slug);
     
-    currentPage = page;
-    let pageCount;
 
-    this.setState({ slug: url }, () => {
-      this.apiCall(url, currentPage)
-        .then(data => {
-          this.setState({ originalChannelData: data, collectedBlocks: data.contents }, () => {
-            pageCount = Math.ceil(data.length / data.per);
-
-            for (let i = currentPage; i < pageCount; i++) {
-              currentPage++;
-              this.apiCall(url, currentPage)
-                .then(data => {
-                  this.setState({ 
-                    collectedBlocks: [...this.state.collectedBlocks, ...data.contents]
-                  }, () => {
-                    this.setState({ redirect: true })
-                  });
-                });
-            }
-          });
-        });
-    });
+    getArenaChannel(this.chanInput.value, 1).then(data => {
+      this.setState({ ...data }, () => {
+        this.setState({ redirect: true }, () => {
+          console.log('redirected');
+        })
+      })
+    }, reason => {
+      // console.log(reason);
+    })
   }
 
   render() {
@@ -73,7 +51,7 @@ export default class App extends Component {
             </div>
 
             <section className="form">
-              <form className="channel-url-form" onSubmit={(e) => this.getArenaChannel(this.chanInput.value, 1, e)}>
+              <form className="channel-url-form" onSubmit={this.handleSubmit}>
                 <input placeholder="Are.na channel URL" defaultValue="liquid-disintegration" type="text" ref={(input) => this.chanInput = input} />
                 <input type="submit" value={"2pdf →"} />
               </form>
