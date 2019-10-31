@@ -1,9 +1,13 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import Pages from './Pages';
 import ReactDOM from 'react-dom';
 import { PDFViewer } from '@react-pdf/renderer';
 
-export default class Viewer extends PureComponent {
+export default class Viewer extends Component {
+  shouldComponentUpdate() {
+    return false
+  }
+  
   render() {
     return (
       <div className="container">

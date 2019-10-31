@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
+import { intersperse } from '../helpers/general'
 
 const styles = StyleSheet.create({
   page: {
@@ -32,18 +33,26 @@ const styles = StyleSheet.create({
   }
 });
 
+let collaboratorList;
+
 export default class Pages extends Component {
-  render() {
+  render(props) {
+    if (this.props.metadata && this.props.metadata.collaborator_count > 0) {
+      collaboratorList = this.props.metadata.collaborators.map((collaborator, i) => {
+        return collaborator.username
+      })
+    }
+    
     return (
       <Document
         title={this.props.metadata.title}
-        author={this.props.metadata.collaborators == null ? `${this.props.metadata.user.full_name}` : `${this.props.metadata.user.full_name}, ${this.props.metadata.collaborators}` }
+        author={collaboratorList !== null ? `${this.props.metadata.user.username}, ${collaboratorList}` : `${this.props.metadata.user.username}` }
       >
         <Page size="A4" style={styles.titlePage}>
           <View style={styles.titleView}>
             <Text style={styles.titleGroup}>Are.na</Text>
             <Text style={styles.titleGroup, styles.textWeightRegular}>/</Text>
-            <Text style={styles.titleGroup}>{this.props.metadata.user.full_name}</Text>
+            <Text style={styles.titleGroup}>{this.props.metadata.user.username.toString()}</Text>
             {this.props.metadata.collaborator_count > 0 &&
             <Text style={styles.titleGroup, styles.textWeightRegular}>{`(+${this.props.metadata.collaborator_count})`}</Text>
             }

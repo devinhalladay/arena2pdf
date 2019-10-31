@@ -23,17 +23,28 @@ export const getArenaChannel = (url, page) => {
 
         pageCount = Math.ceil(data.length / data.per);
 
-        for (let i = currentPage; i < pageCount; i++) {
-          currentPage++;
-          apiCall(url, currentPage)
-            .then(data => {
-              collectedBlocks = [...collectedBlocks, ...data.contents]
+        console.log(pageCount);
 
-              resolve({
-                collectedBlocks: collectedBlocks,
-                originalChannelData: originalChannelData
+        // resolve({ collectedBlocks: collectedBlocks, originalChannelData: originalChannelData })
+
+        if (pageCount > 1) {
+          for (let i = currentPage; i < pageCount; i++) {
+            currentPage++;
+            apiCall(url, currentPage)
+              .then(data => {
+                collectedBlocks = [...collectedBlocks, ...data.contents]
+
+                resolve({
+                  collectedBlocks: collectedBlocks,
+                  originalChannelData: originalChannelData
+                });
               });
-            });
+          }
+        } else {
+          resolve({
+            collectedBlocks: collectedBlocks,
+            originalChannelData: originalChannelData
+          });
         }
       });
   });

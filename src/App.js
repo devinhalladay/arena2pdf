@@ -28,8 +28,14 @@ export default class App extends Component {
       }
 
       this.setState({ slug: this.chanInput.value }, () => {
-        getArenaChannel(this.chanInput.value, 1).then(data => {
+        console.log(this.state.slug);
+        
+        getArenaChannel(this.state.slug, 1).then(data => {
+          console.log(data);
+          
           this.setState({ ...data }, () => {
+            console.log(data);
+            
             this.setState({ loading: false }, () => {
               this.setState({ redirect: true }, () => {
                 console.log(`loaded and redirected to ${this.state.slug}`);
@@ -78,7 +84,6 @@ export default class App extends Component {
                     <Viewer {...props}
                       metadata={this.state.originalChannelData}
                       blocks={this.state.collectedBlocks}
-                      loading={this.state.loading}
                     />
                   )
                 }
