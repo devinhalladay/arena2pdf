@@ -7,6 +7,10 @@ export default class Viewer extends Component {
   shouldComponentUpdate() {
     return false
   }
+
+  componentWillMount() {
+    this.props.setStateFromURL();
+  }
   
   render() {
     return (

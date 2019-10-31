@@ -17,6 +17,22 @@ export default class App extends Component {
     }
 
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.setStateFromURL = this.setStateFromURL.bind(this)
+  }
+  
+  setStateFromURL() {
+    let urlParts = window.location.pathname.split('/');
+    let slug = urlParts[1];
+
+    if (slug === this.state.slug) {
+      this.setState({ redirect: !this.state.redirect })
+    } else {
+      this.setState({
+        slug: this.chanInput.value
+      }, () => {
+        this.setState({ redirect: !this.state.redirect })
+      })
+    }
   }
 
   handleSubmit(e) {
@@ -84,6 +100,7 @@ export default class App extends Component {
                     <Viewer {...props}
                       metadata={this.state.originalChannelData}
                       blocks={this.state.collectedBlocks}
+                      setStateFromURL={this.setStateFromURL}
                     />
                   )
                 }

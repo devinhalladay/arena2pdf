@@ -46,6 +46,8 @@ export default class Pages extends Component {
     return (
       <Document
         title={this.props.metadata.title}
+        creator={`arena2pdf by devin halladay`}
+        producer={`arena2pdf by devin halladay`}
         author={collaboratorList !== null ? `${this.props.metadata.user.username}, ${collaboratorList}` : `${this.props.metadata.user.username}` }
       >
         <Page size="A4" style={styles.titlePage}>
