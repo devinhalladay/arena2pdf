@@ -108,6 +108,7 @@ button {
   }
 
   border-radius: 10px;
+  box-sizing: border-box;
 }
 
 .channel-url-form > * {
@@ -127,7 +128,7 @@ button {
   /* And hide the input's outline, so the form looks like the outline */
   border:none;
 
-  height: 100%;
+  // height: 100%;
 
   &:focus {
     border-color: #000;
@@ -287,16 +288,13 @@ a {
 }
 
 .container {
-  // position: absolute;
   padding-top: 120px;
   margin: auto;
-  // bottom: 0;
-  // overflow: scroll;
-  // right: 0;
-  // left: 0;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
+  max-width: 80%;
+
+  &.hug-top {
+    padding-top: 60px;
+  }
 }
 
 .control-center {
@@ -343,29 +341,3 @@ a {
     }
   }
 }
-
-$purple: #8A4D76;
-$pink: #FA7C91;
-$brown: #757763;
-$beige-light: #D0D1CD;
-$beige-lighter: #EFF0EB;
-
-// Update Bulma's global variables
-$family-sans-serif: Arial, "Helvetica Neue", Helvetica, sans-serif;;
-// $grey-dark: $brown;
-// $grey-light: $beige-light;
-// $primary: $purple;
-// $link: $pink;
-// $widescreen-enabled: false;
-// $fullhd-enabled: false;
-
-// Update some of Bulma's component variables
-// $body-background-color: $beige-lighter;
-// $control-border-width: 2px;
-// $input-border-color: transparent;
-// $input-shadow: none;
-
-// Import only what you need from Bulma
-@import "../node_modules/bulma/sass/utilities/_all.sass";
-@import "../node_modules/bulma/sass/base/_all.sass";
-@import "../node_modules/bulma/sass/elements/container.sass";

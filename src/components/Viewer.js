@@ -7,14 +7,10 @@ export default class Viewer extends Component {
   shouldComponentUpdate() {
     return false
   }
-
-  componentWillMount() {
-    this.props.setStateFromURL();
-  }
   
   render() {
     return (
-      <div className="container">
+      <div className="container hug-top">
         <PDFViewer>
           <Pages metadata={this.props.metadata} blocks={this.props.blocks} />
         </PDFViewer>

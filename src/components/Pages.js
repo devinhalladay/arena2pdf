@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
-import { intersperse } from '../helpers/general'
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
     fontFamily: 'Helvetica',
+    margin: 10
   },
   section: {
     margin: 10,
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
   titleView: {
     maxWidth: '90%',
     marginLeft: '5%',
-    // display: 'flex'
   },
   green: {
     color: '#24AA23'

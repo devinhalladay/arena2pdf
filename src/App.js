@@ -19,16 +19,26 @@ export default class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.setStateFromURL = this.setStateFromURL.bind(this)
   }
+
+  componentDidMount() {
+    this.setStateFromURL()
+  }
   
   setStateFromURL() {
     let urlParts = window.location.pathname.split('/');
-    let slug = urlParts[1];
-
-    if (slug === this.state.slug) {
+    let actualSlug = urlParts.pop() || urlParts.pop();
+    
+    if (this.state.slug && actualSlug === this.state.slug) {
       this.setState({ redirect: !this.state.redirect })
-    } else {
+    } else if (this.state.slug) { 
       this.setState({
         slug: this.chanInput.value
+      }, () => {
+        this.setState({ redirect: !this.state.redirect })
+      })
+    } else {
+      this.setState({
+        slug: actualSlug
       }, () => {
         this.setState({ redirect: !this.state.redirect })
       })
@@ -36,30 +46,34 @@ export default class App extends Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
+    let inputValue;
+    let chanParts;
+    let chan;
+
+    if (typeof e !== 'undefined') {
+      e.preventDefault();
+      inputValue = this.chanInput.value;
+      chanParts = inputValue.split('/');
+      chan = chanParts.pop() || chanParts.pop();  
+    } else {
+      let urlParts = window.location.href.split('/');
+      chan = urlParts.pop() || urlParts.pop();
+    }
 
     this.setState({ loading: !this.state.loading }, () => {
       if (this.state.redirect === true) {
         this.setState({ redirect: false })
       }
 
-      this.setState({ slug: this.chanInput.value }, () => {
-        console.log(this.state.slug);
-        
+      this.setState({ slug: chan }, () => {
         getArenaChannel(this.state.slug, 1).then(data => {
-          console.log(data);
-          
           this.setState({ ...data }, () => {
-            console.log(data);
-            
             this.setState({ loading: false }, () => {
-              this.setState({ redirect: true }, () => {
-                console.log(`loaded and redirected to ${this.state.slug}`);
-              })
+              this.setState({ redirect: true })
             })
           })
         }, reason => {
-          // console.log(reason);
+          console.log(reason);
         })
       })
     })
@@ -76,7 +90,7 @@ export default class App extends Component {
 
             <section className="form">
               <form className="channel-url-form" onSubmit={this.handleSubmit}>
-                <input placeholder="Are.na channel URL" defaultValue="liquid-disintegration" type="text" ref={(input) => this.chanInput = input} />
+                <input placeholder="Are.na channel URL" defaultValue={this.state.slug} type="text" ref={(input) => this.chanInput = input} />
                 <input type="submit" value={"2pdf →"} />
               </form>
             </section>
@@ -94,7 +108,11 @@ export default class App extends Component {
             path={["/:channel"]}
             render={(props) => {
                 if (this.state.loading) {
-                  return (<div>Loading</div>)
+                  return (
+                    <div className="loading-screen">
+                      <h2>Loading...</h2>
+                    </div>
+                  )
                 } else {
                   return (
                     <Viewer {...props}
