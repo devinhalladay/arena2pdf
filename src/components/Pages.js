@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
-import { Page, Text, View, Document, StyleSheet, Font } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
     fontFamily: 'Helvetica',
-    margin: 10
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingHorizontal: 30,
   },
   section: {
-    margin: 10,
-    padding: 10,
+    color: 'black',
+    flexWrap: 'wrap',
+    display: 'flex'
   },
-  titlePage: {
+  titleView: {
     fontSize: 28,
     color: '#999999',
     fontFamily: 'Helvetica-Bold',
-  },
-  titleView: {
-    maxWidth: '90%',
-    marginLeft: '5%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    hyphens: 'none',
+    wordBreak: 'break-word'
   },
   green: {
     color: '#24AA23'
@@ -27,8 +30,12 @@ const styles = StyleSheet.create({
   textWeightRegular: {
     fontFamily: 'Helvetica',
   },
-  titleGroup: {
-    display: 'inline',
+  channelDescription: {
+    fontSize: 12,
+    fontFamily: 'Helvetica',
+    lineHeight: 1,
+    width: "50%",
+    paddingTop: 20
   }
 });
 
@@ -49,16 +56,19 @@ export default class Pages extends Component {
         producer={`arena2pdf by devin halladay`}
         author={collaboratorList !== null ? `${this.props.metadata.user.username}, ${collaboratorList}` : `${this.props.metadata.user.username}` }
       >
-        <Page size="A4" style={styles.titlePage}>
+        <Page size="A4" style={styles.page}>
           <View style={styles.titleView}>
-            <Text style={styles.titleGroup}>Are.na</Text>
-            <Text style={styles.titleGroup, styles.textWeightRegular}>/</Text>
-            <Text style={styles.titleGroup}>{this.props.metadata.user.username.toString()}</Text>
-            {this.props.metadata.collaborator_count > 0 &&
-            <Text style={styles.titleGroup, styles.textWeightRegular}>{`(+${this.props.metadata.collaborator_count})`}</Text>
-            }
-            <Text style={styles.titleGroup, styles.textWeightRegular}>/</Text>
-            <Text style={styles.titleGroup, styles.green}>{this.props.metadata.title}</Text>
+            <Text style={styles.titleView}>
+              <Text>Are.na</Text>
+              <Text style={styles.textWeightRegular}> / </Text>
+              <Text>{this.props.metadata.user.username.toString()}</Text>
+              {this.props.metadata.collaborator_count > 0 &&
+              <Text style={styles.textWeightRegular}>{`(+${this.props.metadata.collaborator_count})`}</Text>
+              }
+              <Text style={styles.textWeightRegular}> / </Text>
+              <Text style={styles.green}>{this.props.metadata.title}</Text>
+            </Text>
+            <Text style={styles.channelDescription}>{this.props.metadata.metadata.description}</Text>
           </View>
         </Page>
         {this.props.blocks.map((block) => {

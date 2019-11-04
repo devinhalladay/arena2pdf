@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Link, Redirect, withRouter } from "react-router-dom";
 import { Switch } from 'react-router';
 import { getArenaChannel } from './helpers/api';
 
@@ -16,67 +16,44 @@ export default class App extends Component {
       loading: true
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.setStateFromURL = this.setStateFromURL.bind(this)
+    this.getChannelData = this.getChannelData.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.getChannelData = this.getChannelData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
-    this.setStateFromURL()
-  }
-  
-  setStateFromURL() {
-    let urlParts = window.location.pathname.split('/');
-    let actualSlug = urlParts.pop() || urlParts.pop();
-    
-    if (this.state.slug && actualSlug === this.state.slug) {
-      this.setState({ redirect: !this.state.redirect })
-    } else if (this.state.slug) { 
-      this.setState({
-        slug: this.chanInput.value
-      }, () => {
-        this.setState({ redirect: !this.state.redirect })
-      })
-    } else {
-      this.setState({
-        slug: actualSlug
-      }, () => {
-        this.setState({ redirect: !this.state.redirect })
-      })
-    }
-  }
-
-  handleSubmit(e) {
-    let inputValue;
-    let chanParts;
-    let chan;
-
-    if (typeof e !== 'undefined') {
-      e.preventDefault();
-      inputValue = this.chanInput.value;
-      chanParts = inputValue.split('/');
-      chan = chanParts.pop() || chanParts.pop();  
-    } else {
-      let urlParts = window.location.href.split('/');
-      chan = urlParts.pop() || urlParts.pop();
+  getChannelData(chan) {
+    if (this.state.redirect === true) {
+      this.setState({ redirect: false })
     }
 
-    this.setState({ loading: !this.state.loading }, () => {
-      if (this.state.redirect === true) {
-        this.setState({ redirect: false })
-      }
-
+    this.setState({ loading: true }, () => {
       this.setState({ slug: chan }, () => {
-        getArenaChannel(this.state.slug, 1).then(data => {
-          this.setState({ ...data }, () => {
-            this.setState({ loading: false }, () => {
-              this.setState({ redirect: true })
+        this.setState({ redirect: true }, () => {
+          getArenaChannel(this.state.slug, 1).then(data => {
+            this.setState({ ...data }, () => {
+              this.setState({ loading: false })
             })
+          }, (reason) => {
+            console.log(reason);
           })
-        }, reason => {
-          console.log(reason);
         })
       })
     })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    let inputVal = this.chanInput.value;
+    let re = /[^/]+(?=\/$|$)/;
+    let inputSlug = re.exec(inputVal)[0];
+
+    this.getChannelData(inputSlug);
+  }
+
+  handleInputChange(e) {
+    this.setState({ chanInput: e.target.value });
   }
 
   render() {
@@ -90,13 +67,13 @@ export default class App extends Component {
 
             <section className="form">
               <form className="channel-url-form" onSubmit={this.handleSubmit}>
-                <input placeholder="Are.na channel URL" defaultValue={this.state.slug} type="text" ref={(input) => this.chanInput = input} />
-                <input type="submit" value={"2pdf →"} />
+                <input placeholder="Are.na channel URL" defaultValue={this.state.slug} type="text" ref={(input) => this.chanInput = input} onChange={this.handleInputChange} />
+                <input type="submit" value={"2pdf →"} disabled={!this.state.chanInput} />
               </form>
             </section>
           </div>
 
-          {this.state.redirect ? <Redirect to={`/${this.state.slug}`} push /> : null}
+          {this.state.redirect ? <Redirect to={`/channel/${this.state.slug}`} push /> : null}
 
           <Switch>
             <Route
@@ -107,21 +84,14 @@ export default class App extends Component {
             <Route
             path={["/:channel"]}
             render={(props) => {
-                if (this.state.loading) {
-                  return (
-                    <div className="loading-screen">
-                      <h2>Loading...</h2>
-                    </div>
-                  )
-                } else {
-                  return (
-                    <Viewer {...props}
-                      metadata={this.state.originalChannelData}
-                      blocks={this.state.collectedBlocks}
-                      setStateFromURL={this.setStateFromURL}
-                    />
-                  )
-                }
+                return (
+                  <Viewer {...props}
+                    metadata={this.state.originalChannelData}
+                    blocks={this.state.collectedBlocks}
+                    getChannelData={this.getChannelData}
+                    loading={this.state.loading}
+                  />
+                )
               }
             }
           />

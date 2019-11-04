@@ -1,20 +1,30 @@
 import React, { Component } from "react";
-import Pages from './Pages';
-import ReactDOM from 'react-dom';
-import { PDFViewer } from '@react-pdf/renderer';
+import Pdf from './Pdf';
 
 export default class Viewer extends Component {
-  shouldComponentUpdate() {
-    return false
+  constructor(props) {
+    super(props);
+
+    let re = /[^/]+(?=\/$|$)/;
+    let chan = re.exec(window.location.href);
+
+    this.props.getChannelData(chan);
   }
-  
+
   render() {
-    return (
-      <div className="container hug-top">
-        <PDFViewer>
-          <Pages metadata={this.props.metadata} blocks={this.props.blocks} />
-        </PDFViewer>
-      </div>
-    )
+    if (this.props.loading == false) {
+      return (
+        <Pdf 
+          metadata={this.props.metadata}
+          blocks={this.props.blocks}
+        />
+      )
+    } else {
+      return (
+        <div className="loading-screen">
+          <h2>Loading...</h2>
+        </div>
+      )
+    }
   }
 }
