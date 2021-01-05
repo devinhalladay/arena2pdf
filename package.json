@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@react-pdf/renderer": "^1.6.7",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "jspdf": "^1.5.3",
     "markdown-to-jsx": "^6.10.3",
     "node-sass": "^4.13.0",
