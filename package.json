@@ -5,7 +5,7 @@
   "dependencies": {
     "@react-pdf/renderer": "^1.6.7",
     "axios": "^0.19.0",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "markdown-to-jsx": "^6.10.3",
     "node-sass": "^4.13.0",
     "react": "^16.11.0",
